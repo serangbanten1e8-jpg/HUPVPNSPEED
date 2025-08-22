@@ -11,9 +11,7 @@ router.post('/login-demo', (req, res) => {
     res.json({ success: true, role: row.role });
   });
 });
-
 router.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/'));
 });
-
 module.exports = router;
