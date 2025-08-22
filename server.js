@@ -13,11 +13,14 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-// In-memory SQLite (untuk deploy cepat)
+// In-memory SQLite
 const db = new sqlite3.Database(':memory:', (err) => {
-  if (err) console.error(err);
-  else console.log('Connected to in-memory SQLite');
+  if (err) return console.error(err);
+  console.log('Connected to in-memory SQLite');
 });
+
+// Export db agar route lain pakai instance yang sama
+module.exports = db;
 
 // Buat tabel
 db.serialize(() => {
@@ -71,20 +74,12 @@ db.serialize(() => {
   )`);
 });
 
-// Routes
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// Routes view
+app.get('/', (req, res) => res.render('index'));
+app.get('/dashboard', (req, res) => res.render('user/dashboard'));
+app.get('/admin', (req, res) => res.render('admin/dashboard'));
 
-app.get('/dashboard', (req, res) => {
-  res.render('user/dashboard');
-});
-
-app.get('/admin', (req, res) => {
-  res.render('admin/dashboard');
-});
-
-// Import routes
+// Routes API
 const apiRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
@@ -93,6 +88,4 @@ app.use('/api', apiRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running at :${PORT}`));.log(`Server running at :${PORT}`));
