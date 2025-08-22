@@ -18,36 +18,189 @@ app.use(session({ secret: 'hupvpnspeed', resave: false, saveUninitialized: true,
 const db = new sqlite3.Database(':memory__');
 module.exports = db;
 
-db.serialize(() => {
-  [
-    `CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, username TEXT UNIQUE, email TEXT UNIQUE, password TEXT, role TEXT DEFAULT 'member', balance INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
-    `CREATE TABLE IF NOT EXISTS servers (id TEXT PRIMARY KEY, name TEXT, type TEXT, host TEXT, port INTEGER, status TEXT DEFAULT 'active')`,
-    `CREATE TABLE IF NOT EXISTS accounts (id TEXT PRIMARY KEY, user_id TEXT, server_id TEXT, type TEXT, username TEXT, password TEXT, expired_at DATETIME, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(server_id) REFERENCES servers(id))`,
-    `CREATE TABLE IF NOT EXISTS topups (id TEXT PRIMARY KEY, user_id TEXT, method TEXT, amount INTEGER, status TEXT DEFAULT 'pending', created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id))`,
-    `CREATE TABLE IF NOT EXISTS ranking (id TEXT PRIMARY KEY, user_id TEXT, total_sales INTEGER DEFAULT 0, FOREIGN KEY(user_id) REFERENCES users(id))`
-  ].forEach(sql => db.run(sql));
-
-  db.run(`INSERT OR IGNORE INTO servers VALUES ('sg1','SG-1','SSH','sg1.hupvpnspeed.my.id',22,'active')`);
-  db.run(`INSERT OR IGNORE INTO users VALUES ('admin','admin','admin@hupvpnspeed.com','admin123','admin',999999,datetime('now'))`);
-  db.run(`INSERT OR IGNORE INTO users VALUES ('demo','demo','demo@hupvpnspeed.com','demo123','member',50000,datetime('now'))`);
+// ... lanjutan dari baris sebelumnya
+  db.serialize(() => {
+    db.run("INSERT OR IGNORE INTO users VALUES ('admin','admin','admin@hupvpnspeed.com','admin123','admin',999999,datetime('now'))");
+    db.run("INSERT OR IGNORE INTO users VALUES ('demo','demo','demo@hupvpnspeed.com','demo123','member',50000,datetime('now'))");
+    db.run("INSERT OR IGNORE INTO products VALUES (1,'Paket 30 Hari','Akses VPN 30 hari',50000,1)");
+    db.run("INSERT OR IGNORE INTO products VALUES (2,'Paket 7 Hari','Akses VPN 7 hari',15000,1)");
+    db.run("INSERT OR IGNORE INTO products VALUES (3,'Paket 1 Hari','Akses VPN 1 hari',5000,1)");
+  });
 });
 
-app.get('/', (req, res) => res.render('index'));
-app.get('/dashboard', (req, res) => {
-  if (!req.session.user) return res.redirect('/');
-  res.render('user/dashboard', { user: req.session.user });
-});
-app.get('/admin', (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/');
-  res.render('admin/dashboard');
+// Routes
+// Home
+app.get('/', (req, res) => {
+  res.render('index');
 });
 
-const apiRoutes = require('./routes/api');
-const adminRoutes = require('./routes/admin');
-const authRoutes = require('./routes/auth');
+// Login
+app.get('/login', (req, res) => {
+  res.render('login');
+});
 
-app.use('/api', apiRoutes);
-app.use('/admin', adminRoutes);
-app.use('/auth', authRoutes);
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    if (row) {
+      req.session.user = row;
+      res.redirect('/dashboard');
+    } else {
+      res.send('Invalid username or password');
+    }
+  });
+});
 
-app.listen(PORT, () => console.log(`Server running at :${PORT}`));
+// Register
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+app.post('/register', (req, res) => {
+  const { fullname, username, email, password } = req.body;
+  db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    if (row) {
+      res.send('Username already exists');
+    } else {
+      db.run("INSERT INTO users (fullname, username, email, password, role, balance, created_at) VALUES (?, ?, ?, ?, 'member', 0, datetime('now'))",
+        [fullname, username, email, password], function(err) {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Database error');
+        }
+        res.redirect('/login');
+      });
+    }
+  });
+});
+
+// Dashboard
+app.get('/dashboard', requireLogin, (req, res) => {
+  db.all("SELECT * FROM products WHERE active = 1", (err, products) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.render('dashboard', { user: req.session.user, products });
+  });
+});
+
+// Buy
+app.post('/buy', requireLogin, (req, res) => {
+  const { product_id } = req.body;
+  const userId = req.session.user.username;
+  db.get("SELECT * FROM products WHERE id = ?", [product_id], (err, product) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    if (!product) return res.status(404).send('Product not found');
+    db.get("SELECT balance FROM users WHERE username = ?", [userId], (err, user) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Database error');
+      }
+      if (user.balance < product.price) {
+        return res.send('Insufficient balance');
+      }
+      const newBalance = user.balance - product.price;
+      db.serialize(() => {
+        db.run("UPDATE users SET balance = ? WHERE username = ?", [newBalance, userId]);
+        db.run("INSERT INTO transactions (user_id, product_id, amount, status, created_at) VALUES (?, ?, ?, 'success', datetime('now'))",
+          [userId, product_id, product.price]);
+      });
+      req.session.user.balance = newBalance;
+      res.redirect('/dashboard');
+    });
+  });
+});
+
+// Topup
+app.get('/topup', requireLogin, (req, res) => {
+  res.render('topup');
+});
+
+app.post('/topup', requireLogin, (req, res) => {
+  const { amount } = req.body;
+  const userId = req.session.user.username;
+  const topupCode = 'TP-' + Date.now();
+  db.run("INSERT INTO topup_requests (user_id, amount, code, status, created_at) VALUES (?, ?, ?, 'pending', datetime('now'))",
+    [userId, amount, topupCode], function(err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.send(`Topup request submitted. Code: ${topupCode}`);
+  });
+});
+
+// Admin
+app.get('/admin', requireAdmin, (req, res) => {
+  db.all("SELECT * FROM users", (err, users) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    db.all("SELECT * FROM transactions", (err, transactions) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Database error');
+      }
+      db.all("SELECT * FROM topup_requests", (err, topups) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Database error');
+        }
+        res.render('admin', { users, transactions, topups });
+      });
+    });
+  });
+});
+
+// Admin approve topup
+app.post('/admin/topup/:id', requireAdmin, (req, res) => {
+  const { id } = req.params;
+  db.get("SELECT * FROM topup_requests WHERE id = ?", [id], (err, topup) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    if (!topup) return res.status(404).send('Topup not found');
+    db.serialize(() => {
+      db.run("UPDATE topup_requests SET status = 'approved' WHERE id = ?", [id]);
+      db.run("UPDATE users SET balance = balance + ? WHERE username = ?", [topup.amount, topup.user_id]);
+    });
+    res.redirect('/admin');
+  });
+});
+
+// Admin reject topup
+app.post('/admin/topup/:id/reject', requireAdmin, (req, res) => {
+  const { id } = req.params;
+  db.run("UPDATE topup_requests SET status = 'rejected' WHERE id = ?", [id], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.redirect('/admin');
+  });
+});
+
+// Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
