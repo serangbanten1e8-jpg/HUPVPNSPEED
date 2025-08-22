@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan - HUPVPNSPEED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white shadow px-4 py-3">
+    <a href="/dashboard" class="text-blue-600 font-bold">← Kembali</a>
+  </nav>
+
+  <div class="max-w-xl mx-auto mt-8 px-4">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h1 class="text-2xl font-bold mb-4">Laporkan Masalah</h1>
+      <form id="formLaporan">
+        <label class="block mb-2 font-semibold">Judul</label>
+        <input required class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+        <label class="block mb-2 font-semibold">Deskripsi</label>
+        <textarea required rows="4" class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition transform hover:scale-105">Kirim Laporan</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('formLaporan').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Laporan terkirim. Admin akan menindaklanjuti.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+const express = require('express');
+const router = express.Router();
+const admin = require('../firebase-config');
+const db = require('../db-helper');
+
+router.post('/login-firebase', async (req, res) => {
+  const { idToken } = req.body;
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const uid = decoded.uid;
+    const email = decoded.email;
+
+    // Cek apakah sudah ada di DB lokal
+    db.get('SELECT * FROM users WHERE id = ?', [uid], (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (!row) {
+        // Insert jika belum ada
+        db.run(
+          'INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)',
+          [uid, email.split('@')[0], email, 'member']
+        );
+      }
+      res.json({ success: true, uid, email });
+    });
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+});
+
+module.exports = router;

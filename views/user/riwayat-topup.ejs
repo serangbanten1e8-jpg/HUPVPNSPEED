@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat Top Up - HUPVPNSPEED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white shadow px-4 py-3">
+    <a href="/dashboard" class="text-blue-600 font-bold">← Kembali</a>
+  </nav>
+
+  <div class="max-w-4xl mx-auto mt-6 px-4">
+    <h1 class="text-2xl font-bold mb-4">Riwayat Top Up</h1>
+    <div class="bg-white rounded-xl shadow overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-4 py-2">Tanggal</th>
+            <th class="px-4 py-2">Metode</th>
+            <th class="px-4 py-2">Jumlah</th>
+            <th class="px-4 py-2">Status</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const dummy = [
+      { date: '2025-08-20 14:32', method: 'QRIS', amount: 50000, status: 'Sukses' },
+      { date: '2025-08-18 09:15', method: 'DANA', amount: 25000, status: 'Sukses' }
+    ];
+    const tbody = document.getElementById('historyBody');
+    dummy.forEach(h => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="border px-4 py-2">${h.date}</td>
+        <td class="border px-4 py-2">${h.method}</td>
+        <td class="border px-4 py-2">Rp ${h.amount.toLocaleString()}</td>
+        <td class="border px-4 py-2"><span class="text-green-600">${h.status}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

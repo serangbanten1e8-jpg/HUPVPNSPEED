@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create SSH - HUPVPNSPEED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white shadow px-4 py-3 flex justify-between items-center">
+    <a href="/dashboard" class="text-blue-600 font-bold text-xl">HUPVPNSPEED</a>
+    <span class="text-sm">Saldo: Rp <span id="balance">50.000</span></span>
+  </nav>
+
+  <div class="max-w-xl mx-auto mt-8 px-4">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h1 class="text-2xl font-bold mb-4">Buat Akun SSH</h1>
+
+      <form id="formSSH">
+        <label class="block mb-2 font-semibold">Username</label>
+        <input type="text" required id="username" class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+        <label class="block mb-2 font-semibold">Password</label>
+        <input type="password" required id="password" class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+        <label class="block mb-2 font-semibold">Durasi (hari)</label>
+        <select id="duration" class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="3">3 Hari - Rp 3.000</option>
+          <option value="7">7 Hari - Rp 5.000</option>
+          <option value="30">30 Hari - Rp 15.000</option>
+        </select>
+
+        <label class="block mb-2 font-semibold">Server</label>
+        <select id="server" class="w-full border px-3 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="sg1">SG-1</option>
+          <option value="sg2">SG-2</option>
+          <option value="id1">ID-1</option>
+          <option value="id2">ID-2</option>
+        </select>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition transform hover:scale-105">Buat Akun</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('formSSH').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Akun SSH berhasil dibuat!');
+    });
+  </script>
+</body>
+</html>

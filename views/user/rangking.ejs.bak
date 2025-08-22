@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ranking Reseller - HUPVPNSPEED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white shadow px-4 py-3">
+    <a href="/dashboard" class="text-blue-600 font-bold">← Kembali</a>
+  </nav>
+
+  <div class="max-w-2xl mx-auto mt-6 px-4">
+    <h1 class="text-2xl font-bold mb-4">Top 10 Reseller</h1>
+    <ol id="rankList" class="list-decimal list-inside bg-white rounded-xl shadow p-6 space-y-2">
+      <!-- Diisi dengan JS -->
+    </ol>
+  </div>
+
+  <script>
+    const dummy = [
+      { name: 'ResellerA', sales: 120 },
+      { name: 'ResellerB', sales: 95 },
+      { name: 'ResellerC', sales: 88 }
+    ];
+    const list = document.getElementById('rankList');
+    dummy.forEach((r, i) => {
+      const li = document.createElement('li');
+      li.className = 'flex justify-between';
+      li.innerHTML = `<span>${i + 1}. ${r.name}</span><span>${r.sales} akun</span>`;
+      list.appendChild(li);
+    });
+  </script>
+</body>
+</html>

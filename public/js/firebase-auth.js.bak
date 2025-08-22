@@ -1,0 +1,62 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Google Login
+window.loginGoogle = () => {
+  signInWithPopup(auth, provider)
+    .then(async result => {
+      const idToken = await result.user.getIdToken();
+      await sendTokenToServer(idToken);
+    })
+    .catch(console.error);
+};
+
+// Email Register
+window.registerEmail = (email, password) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(async userCred => {
+      await sendEmailVerification(userCred.user);
+      const idToken = await userCred.user.getIdToken();
+      await sendTokenToServer(idToken);
+    })
+    .catch(console.error);
+};
+
+// Email Login
+window.loginEmail = (email, password) => {
+  signInWithEmailAndPassword(auth, email, password)
+    .then(async userCred => {
+      const idToken = await userCred.user.getIdToken();
+      await sendTokenToServer(idToken);
+    })
+    .catch(console.error);
+};
+
+async function sendTokenToServer(idToken) {
+  await fetch('/auth/login-firebase', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idToken })
+  });
+  location.href = '/dashboard';
+}

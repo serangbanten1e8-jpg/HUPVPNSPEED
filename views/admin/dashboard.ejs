@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - HUPVPNSPEED</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold">ADMIN PANEL</h1>
+    <a href="/" class="bg-red-500 px-3 py-1 rounded">Logout</a>
+  </nav>
+
+  <div class="flex">
+    <aside class="w-64 bg-white h-screen shadow">
+      <ul class="p-4 space-y-2">
+        <li><a href="/admin/users" class="block px-3 py-2 rounded hover:bg-gray-200">Kelola User</a></li>
+        <li><a href="/admin/servers" class="block px-3 py-2 rounded hover:bg-gray-200">Kelola Server</a></li>
+        <li><a href="/admin/resellers" class="block px-3 py-2 rounded hover:bg-gray-200">Reseller</a></li>
+      </ul>
+    </aside>
+
+    <main class="flex-1 p-6">
+      <h2 class="text-2xl font-bold mb-4">Selamat datang, Admin!</h2>
+      <p>Gunakan menu di samping untuk mengelola sistem.</p>
+    </main>
+  </div>
+</body>
+</html>

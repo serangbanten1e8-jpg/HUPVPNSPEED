@@ -1,0 +1,29 @@
+const express = require('express');
+const router = express.Router();
+const admin = require('../firebase-config');
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./database/db.sqlite');
+
+router.post('/login-firebase', async (req, res) => {
+  const { idToken } = req.body;
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const uid = decoded.uid;
+    const email = decoded.email;
+
+    db.get('SELECT * FROM users WHERE id = ?', [uid], (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!row) {
+        db.run(
+          'INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)',
+          [uid, email.split('@')[0], email, 'member']
+        );
+      }
+      res.json({ success: true, uid, email });
+    });
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+});
+
+module.exports = router;

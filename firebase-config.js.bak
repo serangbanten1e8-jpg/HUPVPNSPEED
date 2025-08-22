@@ -1,0 +1,10 @@
+// Inisialisasi Firebase Admin SDK
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebase-service-account.json'); // unduh di Firebase Console > Project Settings > Service Accounts
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://<your-project-id>.firebaseio.com'
+});
+
+module.exports = admin;

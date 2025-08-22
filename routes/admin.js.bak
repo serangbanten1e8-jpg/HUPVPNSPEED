@@ -1,0 +1,46 @@
+const express = require('express');
+const router = express.Router();
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./database/db.sqlite');
+
+// Render halaman admin
+router.get('/', (req, res) => {
+  res.render('admin/dashboard');
+});
+
+router.get('/users', (req, res) => {
+  res.render('admin/users');
+});
+
+// API admin
+router.get('/api/users', (req, res) => {
+  db.all('SELECT * FROM users', [], (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json(rows);
+    }
+  });
+});
+
+router.delete('/api/users/:id', (req, res) => {
+  db.run('DELETE FROM users WHERE id = ?', [req.params.id], function(err) {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json({ message: 'User deleted' });
+    }
+  });
+});
+
+router.put('/api/users/:id/upgrade', (req, res) => {
+  db.run('UPDATE users SET role = ? WHERE id = ?', ['reseller', req.params.id], function(err) {
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else {
+      res.json({ message: 'User upgraded to reseller' });
+    }
+  });
+});
+
+module.exports = router;
