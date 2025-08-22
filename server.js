@@ -13,17 +13,13 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
+// In-memory SQLite (untuk deploy cepat)
 const db = new sqlite3.Database(':memory:', (err) => {
   if (err) console.error(err);
   else console.log('Connected to in-memory SQLite');
 });
-  if (err) {
-    console.error(err.message);
-  } else {
-    console.log('Connected to SQLite database.');
-  }
-});
 
+// Buat tabel
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -75,6 +71,7 @@ db.serialize(() => {
   )`);
 });
 
+// Routes
 app.get('/', (req, res) => {
   res.render('index');
 });
@@ -87,6 +84,7 @@ app.get('/admin', (req, res) => {
   res.render('admin/dashboard');
 });
 
+// Import routes
 const apiRoutes = require('./routes/api');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
