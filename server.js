@@ -88,4 +88,4 @@ app.use('/api', apiRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
-app.listen(PORT, () => console.log(`Server running at :${PORT}`));.log(`Server running at :${PORT}`));
+app.listen(PORT, () => console.log(`Server running at :${PORT}`));
