@@ -3,27 +3,31 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HUPVPNSPEED</title>
+  <title>Login - HUPVPNSPEED</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>body{background:#0d1117;color:#c9d1d9}</style>
+  <style>
+    body{background:#0d1117;color:#c9d1d9;font-family:'Montserrat',sans-serif}
+  </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
   <div class="bg-gray-900 p-8 rounded-xl shadow-2xl w-full max-w-sm">
-    <h1 class="text-2xl mb-4 text-center">Login Demo</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center">Login HUPVPNSPEED</h1>
     <form id="loginForm">
-      <input type="text" placeholder="Username" value="demo" required class="w-full mb-2 p-2 rounded bg-gray-800">
-      <input type="password" placeholder="Password" value="demo123" required class="w-full mb-2 p-2 rounded bg-gray-800">
-      <button type="submit" class="w-full bg-sky-600 py-2 rounded">Login</button>
+      <input type="text" placeholder="Username" required class="w-full mb-3 px-3 py-2 bg-gray-800 rounded">
+      <input type="password" placeholder="Password" required class="w-full mb-3 px-3 py-2 bg-gray-800 rounded">
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Login</button>
     </form>
-    <button onclick="login('admin','admin123')" class="w-full mt-2 bg-red-600 py-2 rounded">Login Admin</button>
+    <div class="text-center mt-4">
+      <button onclick="loginDemo('admin','admin123')" class="w-full mt-2 bg-yellow-500 text-white py-2 rounded">Login Admin</button>
+      <button onclick="loginDemo('demo','demo123')" class="w-full mt-2 bg-green-500 text-white py-2 rounded">Login Demo</button>
+    </div>
   </div>
   <script>
-  async function login(u,p){
-    const res=await fetch('/auth/login-demo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+  async function loginDemo(user,pass){
+    const res=await fetch('/auth/login-demo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
     const data=await res.json();
     if(data.success){location.href='/dashboard';}
   }
-  document.getElementById('loginForm').addEventListener('submit',e=>{e.preventDefault();login('demo','demo123')});
   </script>
 </body>
 </html>
