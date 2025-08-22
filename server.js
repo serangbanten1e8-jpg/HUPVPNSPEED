@@ -13,7 +13,10 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-const db = new sqlite3.Database('./database/db.sqlite', (err) => {
+const db = new sqlite3.Database(':memory:', (err) => {
+  if (err) console.error(err);
+  else console.log('Connected to in-memory SQLite');
+});
   if (err) {
     console.error(err.message);
   } else {
