@@ -3,52 +3,24 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - HUPVPNSPEED</title>
+  <title>Dashboard - User</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>body{background:#0d1117;color:#c9d1d9}</style>
 </head>
-<body class="bg-gray-100">
-  <nav class="bg-white shadow px-4 py-3 flex justify-between items-center">
-    <button id="menuBtn" class="p-2 rounded text-gray-600 hover:bg-gray-100"><i class="fas fa-bars"></i></button>
-    <span class="text-blue-600 font-bold text-xl">HUPVPNSPEED</span>
-    <span class="text-sm">Saldo: Rp <span id="balance">0</span></span>
-  </nav>
-
-  <div id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full transition-transform md:translate-x-0">
-    <div class="p-4">
-      <h2 class="text-lg font-semibold mb-4">Menu</h2>
-      <ul class="space-y-2">
-        <li><a href="/dashboard" class="block px-3 py-2 rounded-md hover:bg-blue-100">Dashboard</a></li>
-        <li><a href="/topup" class="block px-3 py-2 rounded-md hover:bg-blue-100">Top Up</a></li>
-        <li><a href="/riwayat-topup" class="block px-3 py-2 rounded-md hover:bg-blue-100">Riwayat Top Up</a></li>
-        <li><a href="/ssh" class="block px-3 py-2 rounded-md hover:bg-blue-100">SSH</a></li>
-        <li><a href="/vmess" class="block px-3 py-2 rounded-md hover:bg-blue-100">VMess</a></li>
-        <li><a href="/vless" class="block px-3 py-2 rounded-md hover:bg-blue-100">VLESS</a></li>
-        <li><a href="/trojan" class="block px-3 py-2 rounded-md hover:bg-blue-100">Trojan</a></li>
-        <li><a href="/ranking" class="block px-3 py-2 rounded-md hover:bg-blue-100">Ranking Reseller</a></li>
-        <li><a href="/laporan" class="block px-3 py-2 rounded-md hover:bg-blue-100">Laporan</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <main class="p-4 md:ml-64">
-    <div class="bg-white rounded-xl shadow p-6 mb-4">
-      <h1 class="text-2xl font-bold mb-2">Halo, <span id="username">User</span></h1>
-      <p class="text-gray-600">Role: <span id="role" class="font-semibold">Member</span></p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow p-6">
-      <h2 class="text-xl font-bold mb-4">Server Aktif</h2>
-      <div id="activeServers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </div>
+<body class="flex">
+  <aside class="w-64 bg-gray-900 p-4 space-y-3">
+    <h2 class="text-xl text-sky-400">Menu</h2>
+    <a href="/dashboard" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</a>
+    <a href="/topup" class="block px-3 py-2 rounded hover:bg-gray-700">💰 Top Up</a>
+    <a href="/create-ssh" class="block px-3 py-2 rounded hover:bg-gray-700">🔐 SSH</a>
+    <a href="/create-vmess" class="block px-3 py-2 rounded hover:bg-gray-700">🌐 VMess</a>
+    <a href="/create-vless" class="block px-3 py-2 rounded hover:bg-gray-700">🔗 VLESS</a>
+    <a href="/create-trojan" class="block px-3 py-2 rounded hover:bg-gray-700">🛡️ Trojan</a>
+    <a href="/logout" class="block px-3 py-2 rounded hover:bg-red-600">Logout</a>
+  </aside>
+  <main class="flex-1 p-6">
+    <h1 class="text-3xl mb-4">Dashboard Member</h1>
+    <div class="bg-gray-800 p-4 rounded">Selamat datang, <span id="username">User</span></div>
   </main>
-
-  <script type="module" src="/js/dashboard.js"></script>
-  <script>
-    document.getElementById('menuBtn').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('-translate-x-full');
-    });
-  </script>
 </body>
 </html>
