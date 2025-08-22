@@ -3,28 +3,25 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin - HUPVPNSPEED</title>
+  <title>Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{background:#0d1117;color:#c9d1d9}</style>
 </head>
-<body class="bg-gray-100">
-  <nav class="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
-    <h1 class="text-xl font-bold">ADMIN PANEL</h1>
-    <a href="/" class="bg-red-500 px-3 py-1 rounded">Logout</a>
-  </nav>
-
-  <div class="flex">
-    <aside class="w-64 bg-white h-screen shadow">
-      <ul class="p-4 space-y-2">
-        <li><a href="/admin/users" class="block px-3 py-2 rounded hover:bg-gray-200">Kelola User</a></li>
-        <li><a href="/admin/servers" class="block px-3 py-2 rounded hover:bg-gray-200">Kelola Server</a></li>
-        <li><a href="/admin/resellers" class="block px-3 py-2 rounded hover:bg-gray-200">Reseller</a></li>
-      </ul>
-    </aside>
-
-    <main class="flex-1 p-6">
-      <h2 class="text-2xl font-bold mb-4">Selamat datang, Admin!</h2>
-      <p>Gunakan menu di samping untuk mengelola sistem.</p>
-    </main>
-  </div>
+<body class="flex">
+  <aside class="w-64 bg-gray-900 p-4 space-y-3">
+    <h2 class="text-xl text-sky-400">Admin</h2>
+    <a href="/admin/users" class="block px-3 py-2 rounded hover:bg-gray-700">👥 User</a>
+    <a href="/admin/servers" class="block px-3 py-2 rounded hover:bg-gray-700">🖥️ Server</a>
+    <a href="/admin/statistik" class="block px-3 py-2 rounded hover:bg-gray-700">📊 Statistik</a>
+    <a href="/logout" class="block px-3 py-2 rounded hover:bg-red-600">Logout</a>
+  </aside>
+  <main class="flex-1 p-6">
+    <h1 class="text-3xl mb-4">Dashboard Admin</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-800 p-4 rounded">Total User: 2</div>
+      <div class="bg-gray-800 p-4 rounded">Total Saldo: 1.049.999</div>
+      <div class="bg-gray-800 p-4 rounded">Server Aktif: 1</div>
+    </div>
+  </main>
 </body>
 </html>
