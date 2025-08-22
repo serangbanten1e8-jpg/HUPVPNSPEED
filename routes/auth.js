@@ -1,8 +1,8 @@
 const express = require('express');
+const express = require('express');
 const router = express.Router();
 const admin = require('../firebase-config');
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./database/db.sqlite');
+const db = require('../server.js');
 
 router.post('/login-firebase', async (req, res) => {
   const { idToken } = req.body;
