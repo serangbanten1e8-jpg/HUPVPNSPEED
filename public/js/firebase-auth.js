@@ -4,8 +4,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendEmailVerification
+  createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -23,7 +22,7 @@ const provider = new GoogleAuthProvider();
 
 window.loginGoogle = () => {
   signInWithPopup(auth, provider)
-    .then(async result => {
+    .then(async (result) => {
       const idToken = await result.user.getIdToken();
       await sendTokenToServer(idToken);
     })
@@ -32,8 +31,7 @@ window.loginGoogle = () => {
 
 window.registerEmail = (email, password) => {
   createUserWithEmailAndPassword(auth, email, password)
-    .then(async userCred => {
-      await sendEmailVerification(userCred.user);
+    .then(async (userCred) => {
       const idToken = await userCred.user.getIdToken();
       await sendTokenToServer(idToken);
     })
@@ -42,7 +40,7 @@ window.registerEmail = (email, password) => {
 
 window.loginEmail = (email, password) => {
   signInWithEmailAndPassword(auth, email, password)
-    .then(async userCred => {
+    .then(async (userCred) => {
       const idToken = await userCred.user.getIdToken();
       await sendTokenToServer(idToken);
     })
